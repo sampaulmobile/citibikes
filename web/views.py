@@ -3,10 +3,7 @@ from web import app, station_map
 import geopy
 import geopy.distance
 from heapq import heappush, heappop, nsmallest
-
-from flask import Flask
 from datetime import datetime
-from flask_mail import Mail, Message
 from pytz import timezone
 from dateutil import tz
 import time
