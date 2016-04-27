@@ -4,6 +4,14 @@ import geopy
 import geopy.distance
 from heapq import heappush, heappop, nsmallest
 
+from flask import Flask
+from datetime import datetime
+from flask_mail import Mail, Message
+from pytz import timezone
+from dateutil import tz
+import time
+
+
 
 @app.route('/')
 def index():
@@ -13,10 +21,12 @@ def index():
 def status(location):
     lon, lat = location.split(';')[0:2]
     pt = geopy.Point(longitude=lon, latitude=lat)
-    # input_pt = geopy.Point(longitude=-74.005947, latitude=40.745295)
     return jsonify(output=getStations(pt))
 
 def getStations(input_pt, n = 5):
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('US/Eastern')
+
     heap = []
     for i, d in station_map.iteritems():
         dist = geopy.distance.distance(input_pt, d['pt']).km
@@ -26,11 +36,16 @@ def getStations(input_pt, n = 5):
     for pair in nsmallest(n, heap):
         dist, s_id = pair
         o = station_map[s_id]
+        ts = datetime.strptime(o['lastUpdated'], "%Y-%m-%d %I:%M:%S %p")
+        t = ts.replace(tzinfo=to_zone).astimezone(to_zone)
+        now = datetime.now(timezone('US/Eastern'))
+        secs = round((now - t).total_seconds())
+
         output.append({
             'address' : o['address'],
             'bikes' : o['bikes'],
             'docks' : o['docks'],
             'dist' : dist,
-            'lastUpdated' : o['lastUpdated']
+            'lastUpdated' : "{0} secs".format(secs)
             })
     return output
