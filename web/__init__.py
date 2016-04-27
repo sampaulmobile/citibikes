@@ -20,38 +20,28 @@ def create_app():
         global refresh_thread
         refresh_thread.cancel()
 
-    def initData():
-        global station_map
-        global refresh_thread
-
-        data = json.loads(requests.get(url=STATUS_URL).text)
-        for station in data['stationBeanList']:
-            station_map[station['id']] = {
-                    'name' : station['stationName'],
-                    'address' : station['stAddress1'],
-                    'pt' : geopy.Point(longitude=station['longitude'], latitude=station['latitude']),
-                    'docks' : station['availableDocks'],
-                    'bikes' : station['availableBikes'],
-                    'lastUpdated' : station['lastCommunicationTime']
-                    }
-
-        refresh_thread = threading.Timer(LOOP_TIME, refreshData, ())
-        refresh_thread.start()
-
     def refreshData():
         global station_map
         global refresh_thread
-        data = json.loads(requests.get(url=STATUS_URL).text)
-        for station in data['stationBeanList']:
-            o = station_map[station['id']]
-            o['docks'] = station['availableDocks']
-            o['bikes'] = station['availableBikes']
-            o['lastUpdated'] = station['lastCommunicationTime']
+
+        try:
+            data = json.loads(requests.get(url=STATUS_URL).text)
+            for station in data['stationBeanList']:
+                station_map[station['id']] = {
+                        'name' : station['stationName'],
+                        'address' : station['stAddress1'],
+                        'pt' : geopy.Point(longitude=station['longitude'], latitude=station['latitude']),
+                        'docks' : station['availableDocks'],
+                        'bikes' : station['availableBikes'],
+                        'lastUpdated' : station['lastCommunicationTime']
+                        }
+        except:
+            print "Looks like there was an error getting bike info"
 
         refresh_thread = threading.Timer(LOOP_TIME, refreshData, ())
         refresh_thread.start()
 
-    initData()
+    refreshData()
     atexit.register(interrupt)
     return app
 
