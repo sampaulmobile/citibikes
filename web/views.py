@@ -21,6 +21,7 @@ def status(location):
     return jsonify(output=getStations(pt))
 
 def getStations(input_pt, n = 5):
+    global station_map
     from_zone = tz.gettz('UTC')
     to_zone = tz.gettz('US/Eastern')
 
