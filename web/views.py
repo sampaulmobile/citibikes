@@ -54,14 +54,14 @@ def getStationsWithMap(input_pt, station_map, n = 5):
         ts = datetime.strptime(o['lastUpdated'], "%Y-%m-%d %I:%M:%S %p")
         t = ts.replace(tzinfo=to_zone).astimezone(to_zone)
         now = datetime.now(timezone('US/Eastern'))
-        secs = round((now - t).total_seconds())
+        secs = int(round((now - t).total_seconds()))
 
         output.append({
             'address' : o['address'],
             'bikes' : o['bikes'],
             'docks' : o['docks'],
             'dist' : dist,
-            'lastUpdated' : "{0} secs".format(secs)
+            'lastUpdated' : "{0}s".format(secs)
             })
     return output
 
