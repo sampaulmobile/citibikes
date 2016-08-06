@@ -18,7 +18,7 @@ def index():
 
 @app.route('/status/<location>')
 def status(location):
-    lon, lat = location.split(';')[0:2]
+    lat, lon = location.split(';')[0:2]
     pt = geopy.Point(longitude=lon, latitude=lat)
     return jsonify(output=getStations(pt))
 
@@ -35,7 +35,7 @@ def status_full(location):
                 'bikes' : station['availableBikes'],
                 'lastUpdated' : station['lastCommunicationTime']
                 }
-    lon, lat = location.split(';')[0:2]
+    lat, lon = location.split(';')[0:2]
     pt = geopy.Point(longitude=lon, latitude=lat)
     return jsonify(output=getStationsWithMap(pt, station_map))
 
