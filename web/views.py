@@ -61,6 +61,7 @@ def getStationsWithMap(input_pt, station_map, n = 5):
             'bikes' : o['bikes'],
             'docks' : o['docks'],
             'dist' : dist,
+            'timeOffset' : secs,
             'lastUpdated' : "{0}s".format(secs)
             })
     return output
@@ -89,6 +90,7 @@ def getStations(input_pt, n = 5):
             'bikes' : o['bikes'],
             'docks' : o['docks'],
             'dist' : dist,
+            'timeOffset' : secs,
             'lastUpdated' : "{0}s".format(secs)
             })
     return output
